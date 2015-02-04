@@ -5,6 +5,7 @@ __author__ = 'ghost'
 
 import tornado.web
 from app.legacyserver.views import *
+from app.webserver.views import *
 from app import router
 from settings import config
 

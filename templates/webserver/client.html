@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>register client</title>
+</head>
+<body>
+  <div>
+    <h3>please register the client</h3>
+
+    <form action="" method="POST">
+      <label for="redirect_uris">redirect_uri</label>
+      <input id="redirect_uris" name="redirect_uris" type="text" value="http://127.0.0.1:5000" placeholder="please enter a redirect url"/>
+      <input type="submit" value="register"/>
+    </form>
+
+    <br/>
+    <br/>
+    <hr/>
+    <br/>
+    <br/>
+
+    {% if clients %}
+    <table>
+      <thead>
+        <tr>
+          <th>client_id</th><th>client_secret</th><th>grant_type</th><th>response_type</th><th>scopes</th>><th>default_scopes</th>><th>redirect_uris</th><th>default_redirect_uri</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for client in clients %}
+        <tr>
+          <td>{{ client.client_id }}</td><td>{{ client.client_secret }}</td><td>{{ client.grant_type }}</td><td>{{ client.response_type }}</td><td>{{ client.scopes }}</td>><td>{{ client.default_scopes }}</td>><td>{{ client.redirect_uris }}</td><td>{{ client.default_redirect_uri }}</td>
+        </tr>
+      {% end %}
+      </tbody>
+    </table>
+    {% end %}
+  </div>
+</body>
+</html>
