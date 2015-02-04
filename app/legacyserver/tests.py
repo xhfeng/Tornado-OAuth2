@@ -124,6 +124,7 @@ class TestLegacyRefresh(unittest.TestCase):
         self.update_refresh_token()
         result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
         self.assertTrue('refresh_token' in result.keys())
+        print result
 
 
 class TestProtectResource(unittest.TestCase):
@@ -148,12 +149,17 @@ class TestProtectResource(unittest.TestCase):
         res = urllib2.urlopen(url)
         self.assertTrue('hello legacy' in res.read())
 
-
     def test_unvalid_access_token_protected_resource(self):
         try:
             get_request(self.url, 'access_token')
         except urllib2.HTTPError, e:
             self.assertEqual(403, e.code)
+
+    def test_get_protected_resource(self):
+        access_token = self.get_access_token()
+        result = get_request(self.url, access_token)
+        self.assertTrue('hello admin' in result)
+        self.assertTrue('<p>this is protect resource</p>' in result)
 
 
 if __name__ == '__main__':
