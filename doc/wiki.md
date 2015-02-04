@@ -11,6 +11,12 @@ OAuth 2.0定义了四种授权方式。
 * 密码模式（resource owner password credentials）
 * 客户端模式（client credentials）
 
+该项目 `0.0.1` 实现 `密码模式`
+
+一 [项目简介](https://github.com/rsj217/Tornado-OAuth2/wiki/%E4%B8%80-%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B)
+
+二 [密码模式](https://github.com/rsj217/Tornado-OAuth2/wiki/%E4%BA%8C-%E5%AF%86%E7%A0%81%E6%A8%A1%E5%BC%8F-Resource-Owner-Password-Credentials-Grant)
+
 该项目 0.0.1 实现 密码模式
 
 密码模式（Resource Owner Password Credentials Grant）中，用户向客户端提供自己的用户名和密码。客户端使用这些信息，向"服务商提供商"索要授权。
