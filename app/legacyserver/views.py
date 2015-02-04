@@ -12,6 +12,7 @@ from app import router
 from app.utils import extract_params
 from .validator import LegacyValidator
 from .models import Client
+from .decorator import provider
 
 
 logger = logging.getLogger('legacy')
@@ -21,7 +22,7 @@ logger = logging.getLogger('legacy')
 class LegacyIndexHandler(tornado.web.RequestHandler):
 
     def get(self, *args, **kwargs):
-        self.write('hello world')
+        self.write('hello legacy')
 
 
 @router.Route('/legacy/authorize', name='legacy-authorize')
@@ -68,6 +69,15 @@ class LegacyRefreshHandler(tornado.web.RequestHandler):
             self.redirect(self._error_uri)
         self.set_header('Content-Type', 'application/json')
         self.finish(body)
+
+
+@router.Route('/legacy/protect', name='legacy-protect')
+class OauthProtectHandler(tornado.web.RequestHandler):
+
+    @provider.protected_resource_view(scopes=['common', 'email'])
+    def get(self, *args, **kwargs):
+        self.write('<h1>hello %s </h1>' % self.request.current_user.username)
+        self.write('<p>this is protect resource</p>')
 
 
 @router.Route('/legacy/error', name='legacy-error')

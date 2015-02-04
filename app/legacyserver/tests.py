@@ -134,5 +134,37 @@ class TestLegacyRefresh(unittest.TestCase):
         self.assertTrue('refresh_token' in result.keys())
 
 
+class TestProtectResource(unittest.TestCase):
+
+    def setUp(self):
+        self.url = 'http://127.0.0.1:8000/legacy/protect'
+
+    def get_access_token(self):
+        url = 'http://127.0.0.1:8000/legacy/authorize'
+        client_id = "bb0e26df-7da4-4142-9935-7d9086a089bd"
+        client_secret = "9892d9ab-da50-44e9-91c7-15615a7fc60a"
+        params = {
+            'grant_type': 'password',
+            'username': 'admin',
+            'password': '123'
+        }
+        result = json.loads(post_request(params, url, client_id, client_secret))
+        self.assertTrue('access_token' in result.keys())
+        return result.get('access_token')
+
+    def test_get_unprotected_resource(self):
+        url = 'http://127.0.0.1:8000/legacy'
+        res = urllib2.urlopen(url)
+        self.assertTrue('hello legacy' in res.read())
+
+
+    def test_unvalid_access_token_protected_resource(self):
+        try:
+            get_request(self.url, 'access_token')
+        except urllib2.HTTPError, e:
+            self.assertEqual(403, e.code)
+
+
+
 if __name__ == '__main__':
     unittest.main()
