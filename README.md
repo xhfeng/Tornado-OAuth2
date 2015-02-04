@@ -35,7 +35,8 @@ Mac OS
     $ cd app/legacyserver
     $ python models
     
-browser the http://localhost/legacy/client to register a clinet, keep secret the clinet_id and client_secret
+browser the [http://localhost/legacy/client](http://localhost/legacy/client) to register a clinet, keep secret the 
+`clinet_id` and `client_secret`
     
     $ python tests.py
     
