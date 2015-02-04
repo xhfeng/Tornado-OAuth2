@@ -91,36 +91,36 @@ class LegacyValidator(RequestValidator):
             request._bearertoken.access_token = token.get('access_token')
             request._bearertoken.refresh_token = token.get('refresh_token')
             request._bearertoken.save()
-    #
-    # def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
-    #
-    #     logger.info('验证 refresh_token')
-    #
-    #     try:
-    #         bt =  BearerToken.objects.get(refresh_token=refresh_token, client=client)
-    #     except BearerToken.DoesNotExist, e:
-    #         return False
-    #     request._bearertoken = bt
-    #     return True
-    #
-    # def get_original_scopes(self, refresh_token, request, *args, **kwargs):
-    #
-    #     bt = BearerToken.objects(refresh_token=refresh_token).first()
-    #     return bt.scopes
-    #
-    # def validate_bearer_token(self, token, scopes, request):
-    #     logger.info('验证访问资源的 access_token')
-    #     authorization = request.headers.get('Authorization')
-    #     access_token_b64 = authorization[7:]
-    #     access_token = base64.b64decode(access_token_b64)
-    #     now = datetime.datetime.utcnow()
-    #     try:
-    #         bt = BearerToken.objects.get(access_token=access_token, expires_at__gte=now)
-    #         # TODO validate the scopes
-    #         # author_scopes = bt.scopes.split()
-    #
-    #     except:
-    #         return False
-    #     request.user = bt.user
-    #     return True
+
+    def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
+
+        logger.info('验证 refresh_token')
+
+        try:
+            bt =  BearerToken.objects.get(refresh_token=refresh_token, client=client)
+        except BearerToken.DoesNotExist, e:
+            return False
+        request._bearertoken = bt
+        return True
+
+    def get_original_scopes(self, refresh_token, request, *args, **kwargs):
+
+        bt = BearerToken.objects(refresh_token=refresh_token).first()
+        return bt.scopes
+
+    def validate_bearer_token(self, token, scopes, request):
+        logger.info('验证访问资源的 access_token')
+        authorization = request.headers.get('Authorization')
+        access_token_b64 = authorization[7:]
+        access_token = base64.b64decode(access_token_b64)
+        now = datetime.datetime.utcnow()
+        try:
+            bt = BearerToken.objects.get(access_token=access_token, expires_at__gte=now)
+            # TODO validate the scopes
+            # author_scopes = bt.scopes.split()
+
+        except:
+            return False
+        request.user = bt.user
+        return True
 

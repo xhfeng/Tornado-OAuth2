@@ -94,3 +94,45 @@ class TestLegacyAuthorize(unittest.TestCase):
     def test_access_token(self):
         result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
         self.assertTrue('access_token' in result.keys())
+
+
+class TestLegacyRefresh(unittest.TestCase):
+
+    def setUp(self):
+        self.url = 'http://127.0.0.1:8000/legacy/authorize'
+        self.client_id = "bb0e26df-7da4-4142-9935-7d9086a089bd"
+        self.client_secret = "9892d9ab-da50-44e9-91c7-15615a7fc60a"
+        self.params = {
+            'grant_type': 'refresh_token',
+            'refresh_token': 'refresh_token'
+        }
+
+    def update_refresh_token(self):
+        authorize_url = 'http://127.0.0.1:8000/legacy/authorize'
+        authorize_params = {
+            'grant_type': 'password',
+            'username': 'admin',
+            'password': '123'
+        }
+        result = json.loads(post_request(authorize_params, authorize_url, self.client_id, self.client_secret))
+        self.assertTrue('refresh_token' in result.keys())
+        self.params.update(refresh_token=result.get('refresh_token'))
+
+    def test_unvalid_grant_type(self):
+        self.update_refresh_token()
+        self.params.update(grant_type='wrong_grant_type')
+        result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
+        self.assertFalse('refresh_token' in result.keys())
+
+    def test_unvalid_refresh_token(self):
+        result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
+        self.assertFalse('refresh_token' in result.keys())
+
+    def test_refresh_token(self):
+        self.update_refresh_token()
+        result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
+        self.assertTrue('refresh_token' in result.keys())
+
+
+if __name__ == '__main__':
+    unittest.main()

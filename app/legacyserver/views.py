@@ -36,16 +36,36 @@ class LegacyAuthorizeHandler(tornado.web.RequestHandler):
 
         try:
             headers, body, status = self._token_endpoint.create_token_response(uri, http_method, body, headers)
-
         except errors.FatalClientError as e:
             logger.error(e)
-            print e
             self.redirect(self._error_uri)
         except errors.OAuth2Error as e:
             logger.error(e)
-            print e
             self.redirect(self._error_uri)
 
+        self.set_header('Content-Type', 'application/json')
+        self.finish(body)
+
+
+@router.Route('/legacy/refresh', name='legacy-refresh')
+class LegacyRefreshHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        # 初始化 oauth2 后端服务
+        self._refresh_endpoint = LegacyApplicationServer(LegacyValidator())
+        self._error_uri = self.reverse_url('legacy-error')
+
+    def post(self, *args, **kwargs):
+        uri, http_method, body, headers = extract_params(self.request)
+
+        try:
+            headers, body, status = self._refresh_endpoint.create_token_response(
+                uri, http_method, body, headers)
+        except errors.FatalClientError as e:
+            logger.error(e)
+            self.redirect(self._error_uri)
+        except errors.OAuth2Error as e:
+            logger.error(e)
+            self.redirect(self._error_uri)
         self.set_header('Content-Type', 'application/json')
         self.finish(body)
 
