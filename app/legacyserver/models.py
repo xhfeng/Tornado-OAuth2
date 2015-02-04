@@ -63,4 +63,5 @@ if __name__ == '__main__':
         host='localhost',
         port=27017
     )
-
+    User(username='admin', password='123').save()
+    Client()
