@@ -27,7 +27,7 @@ class WebAuthorizeHandler(tornado.web.RequestHandler):
 
     def initialize(self):
         # 初始化 oauth2 后端服务
-        self._token_endpoint = WebApplicationServer(WebValidator())
+        self._authorization_endpoint = WebApplicationServer(WebValidator())
         self._error_uri = self.reverse_url('web-error')
 
     def get(self):
@@ -39,23 +39,26 @@ class WebAuthorizeHandler(tornado.web.RequestHandler):
             # 验证client请求，识别client身份
             scopes, credentials = self._authorization_endpoint.validate_authorization_request(
                 uri, http_method, body, headers)
-            # 渲染用户认证授权页面
-            self.write('<h1> Authorize access to %s </h1>' % credentials['client_id'])
-            self.write('<form method="POST" action="">')
-            for scope in scopes or []:
-                self.write('<input type="checkbox" checked="checked" name="scopes" value="%s"/> %s' % (scope, scope))
-
-            self.write('<input type="text" name="username" value="username"/>')
-            self.write('<input type="password" name="password" value="password"/>')
-            self.write('<input type="submit" value="Authorize"/>')
-
         except errors.FatalClientError as e:
-            logger.error(e)
+            logger.error(e.error)
+            self.finish(e.error)
             self.redirect(self._error_uri)
         except errors.OAuth2Error as e:
-            e.redirect_uri = redirect_uri or 'https://localhost'
-            logger.error(e)
-            # self.redirect(e.in_uri(e.redirect_uri))
+            e.redirect_uri = redirect_uri
+            logger.error(e.error)
+            self.finish(e.error)
+            self.redirect(e.in_uri(e.redirect_uri))
+
+        # 渲染用户认证授权页面
+        self.write('<h1> Authorize access to %s </h1>' % credentials['client_id'])
+        self.write('<form method="POST" action="">')
+        for scope in scopes or []:
+            self.write('<input type="checkbox" checked="checked" name="scopes" value="%s"/> %s' % (scope, scope))
+
+        self.write('<input type="text" name="username" value="username"/>')
+        self.write('<input type="password" name="password" value="password"/>')
+        self.write('<input type="submit" value="Authorize"/>')
+
 
     def post(self, *args, **kwargs):
         uri, http_method, body, headers = extract_params(self.request)
@@ -113,7 +116,7 @@ class WebProtectHandler(tornado.web.RequestHandler):
         self.write('<h1>hello %s </h1>' % self.request.current_user.username)
         self.write('<p>this is protect resource</p>')
 
-@router.Route('/web/error', name='web-error')
+@router.Route('/web/error/', name='web-error')
 class WebErrorHandler(tornado.web.RequestHandler):
 
     def get(self):

@@ -26,6 +26,7 @@ class WebValidator(RequestValidator):
         :param request: 客户端发起的请求对象
         :return: 合法返回 True，非法返回 False
         """
+
         try:
             request._client = Client.objects.get(client_id=client_id)
             return True
@@ -68,6 +69,9 @@ class WebValidator(RequestValidator):
         :param request: 客户端发起的请求对象
         :return: 验证通过返回 True，反之 False
         """
+
+        print scopes
+
         if not request._client.scopes:
             request._client.scopes = self.get_default_scopes(client_id, request)
             request._client.save()
