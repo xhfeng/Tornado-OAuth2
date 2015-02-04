@@ -64,4 +64,3 @@ if __name__ == '__main__':
         port=27017
     )
     User(username='admin', password='123').save()
-    Client()
