@@ -3,7 +3,6 @@
 
 __author__ = 'ghost'
 
-
 import datetime
 import base64
 import logging
@@ -14,11 +13,7 @@ from app.utils import genera_expires_time
 logger = logging.getLogger('oauth')
 
 
-
-
-
 class LegacyValidator(RequestValidator):
-
     def authenticate_client(self, request, *args, **kwargs):
 
         logger.info('验证客户端')
@@ -63,8 +58,8 @@ class LegacyValidator(RequestValidator):
 
     def save_bearer_token(self, token, request, *args, **kwargs):
         logger.info('生成 token')
-        access_token=token.get('access_token')
-        refresh_token=token.get('refresh_token')
+        access_token = token.get('access_token')
+        refresh_token = token.get('refresh_token')
         expires_in = token.get('expires_in')
         expires_at = genera_expires_time(minutes=expires_in)
         # 授权之后生成 access_token
@@ -73,7 +68,7 @@ class LegacyValidator(RequestValidator):
             if bt:
                 bt.delete()
             data = dict(
-                client = request._client,
+                client=request._client,
                 user=request._user[0],
                 scopes=request._client.scopes,
                 access_token=access_token,
@@ -97,7 +92,7 @@ class LegacyValidator(RequestValidator):
         logger.info('验证 refresh_token')
 
         try:
-            bt =  BearerToken.objects.get(refresh_token=refresh_token, client=client)
+            bt = BearerToken.objects.get(refresh_token=refresh_token, client=client)
         except BearerToken.DoesNotExist, e:
             return False
         request._bearertoken = bt

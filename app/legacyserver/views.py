@@ -20,14 +20,12 @@ logger = logging.getLogger('legacy')
 
 @router.Route('/legacy', name='legacy')
 class LegacyIndexHandler(tornado.web.RequestHandler):
-
     def get(self, *args, **kwargs):
         self.write('hello legacy')
 
 
 @router.Route('/legacy/authorize', name='legacy-authorize')
 class LegacyAuthorizeHandler(tornado.web.RequestHandler):
-
     def initialize(self):
         self._token_endpoint = LegacyApplicationServer(LegacyValidator())
         self._error_uri = self.reverse_url('legacy-error')
@@ -73,7 +71,6 @@ class LegacyRefreshHandler(tornado.web.RequestHandler):
 
 @router.Route('/legacy/protect', name='legacy-protect')
 class OauthProtectHandler(tornado.web.RequestHandler):
-
     @provider.protected_resource_view(scopes=['common', 'email'])
     def get(self, *args, **kwargs):
         self.write('<h1>hello %s </h1>' % self.request.current_user.username)
@@ -82,7 +79,6 @@ class OauthProtectHandler(tornado.web.RequestHandler):
 
 @router.Route('/legacy/error', name='legacy-error')
 class LegacyErrorHandler(tornado.web.RequestHandler):
-
     def get(self):
         self.write('legacy error')
 

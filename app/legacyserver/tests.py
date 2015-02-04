@@ -3,8 +3,6 @@
 
 __author__ = 'ghost'
 
-
-
 import urllib
 import urllib2
 import base64
@@ -12,11 +10,7 @@ import unittest
 import json
 
 
-
-
-
 def post_request(params, url, client_id, client_secret):
-
     s = "{}:{}".format(client_id, client_secret)
     b64 = base64.b64encode(s)
     authorization = 'Basic {}'.format(b64)
@@ -29,6 +23,7 @@ def post_request(params, url, client_id, client_secret):
     if response.code == 200:
         tokeninfo = response.read()
         return tokeninfo
+
 
 def get_request(url, access_token):
     b64 = base64.b64encode(access_token)
@@ -44,7 +39,6 @@ def get_request(url, access_token):
 
 
 class TestLegacyAuthorize(unittest.TestCase):
-
     def setUp(self):
         self.url = 'http://127.0.0.1:8000/legacy/authorize'
         self.client_id = "bb0e26df-7da4-4142-9935-7d9086a089bd"
@@ -86,7 +80,6 @@ class TestLegacyAuthorize(unittest.TestCase):
         self.assertDictEqual(error_msg, result)
 
     def test_default_scopes(self):
-
         self.params.update(scope='common')
         result = json.loads(post_request(self.params, self.url, self.client_id, self.client_secret))
         self.assertTrue('common', result.get('scopes'))
@@ -97,7 +90,6 @@ class TestLegacyAuthorize(unittest.TestCase):
 
 
 class TestLegacyRefresh(unittest.TestCase):
-
     def setUp(self):
         self.url = 'http://127.0.0.1:8000/legacy/authorize'
         self.client_id = "bb0e26df-7da4-4142-9935-7d9086a089bd"
@@ -135,7 +127,6 @@ class TestLegacyRefresh(unittest.TestCase):
 
 
 class TestProtectResource(unittest.TestCase):
-
     def setUp(self):
         self.url = 'http://127.0.0.1:8000/legacy/protect'
 
@@ -163,7 +154,6 @@ class TestProtectResource(unittest.TestCase):
             get_request(self.url, 'access_token')
         except urllib2.HTTPError, e:
             self.assertEqual(403, e.code)
-
 
 
 if __name__ == '__main__':

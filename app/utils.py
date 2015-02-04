@@ -10,7 +10,6 @@ from tornado.httputil import HTTPServerRequest
 
 
 def extract_params(request):
-
     if not isinstance(request, HTTPServerRequest):
         request = request.request
 
@@ -29,15 +28,13 @@ def extract_params(request):
 
     body = request.body
     # if body:
-    #     body = map(lambda x: x.split('='), request.body.split('&'))
+    # body = map(lambda x: x.split('='), request.body.split('&'))
     #     body = urllib.urlencode(map(lambda x: tuple(x), body))
 
     return uri, http_method, body, headers
 
 
-
 def genera_expires_time(**kwargs):
-
     now = datetime.datetime.utcnow()
     save_time = now + datetime.timedelta(**kwargs)
     return save_time

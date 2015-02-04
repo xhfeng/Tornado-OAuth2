@@ -36,12 +36,14 @@ class LegacyProviderDecorator(object):
                     'scopes': r.scopes
                 })
                 if valid:
-                    request.request.current_user =  kwargs.get('user')
+                    request.request.current_user = kwargs.get('user')
                     return f(request, *args, **kwargs)
                 else:
                     raise tornado.web.HTTPError(403)
+
             return wrapper
 
         return decorator
+
 
 provider = LegacyProviderDecorator()
