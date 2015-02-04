@@ -43,6 +43,10 @@ browser the [http://localhost/legacy/client](http://localhost/legacy/client) to 
 enjoy
 
 
+### Document
+
+please read the [wiki](https://github.com/rsj217/Tornado-OAuth2/wiki/%E4%B8%80-%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B) 
+
 
 ### Feature
 
