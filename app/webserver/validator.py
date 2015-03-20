@@ -70,8 +70,6 @@ class WebValidator(RequestValidator):
         :return: 验证通过返回 True，反之 False
         """
 
-        print scopes
-
         if not request._client.scopes:
             request._client.scopes = self.get_default_scopes(client_id, request)
             request._client.save()
